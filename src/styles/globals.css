@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+/*
+ * Chat Link design system
+ * ------------------------------------------------------------------
+ * Dark mode is CLASS-based (not prefers-color-scheme) so the navbar
+ * toggle can override the OS setting. `ThemeScript` in the root layout
+ * sets `.dark` on <html> before first paint to avoid a flash.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------- */
+/* 1. Primitive tokens                                              */
+/* ---------------------------------------------------------------- */
+@theme {
+  /* Brand: "signal" teal. Deliberately distinct from other CPaaS brands. */
+  --color-brand-50: #edfffb;
+  --color-brand-100: #d0fff5;
+  --color-brand-200: #a4ffec;
+  --color-brand-300: #63f8dd;
+  --color-brand-400: #22e8ca;
+  --color-brand-500: #06cbb2;
+  --color-brand-600: #00a693;
+  --color-brand-700: #058376;
+  --color-brand-800: #0a675f;
+  --color-brand-900: #0d554e;
+  --color-brand-950: #003331;
+
+  /* Neutral ramp — slightly cool, keeps large dark surfaces from muddying. */
+  --color-ink-50: #f6f8f9;
+  --color-ink-100: #eceff2;
+  --color-ink-200: #d5dbe1;
+  --color-ink-300: #b0bbc6;
+  --color-ink-400: #8595a5;
+  --color-ink-500: #66798a;
+  --color-ink-600: #516172;
+  --color-ink-700: #434f5d;
+  --color-ink-800: #3a444f;
+  --color-ink-900: #232a32;
+  --color-ink-950: #12171c;
+  --color-ink-975: #0b0e12;
+
+  /* Typography */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Display scale — for hero + section headings. */
+  --text-display: 3.5rem;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 600;
+
+  --text-display-lg: 4.5rem;
+  --text-display-lg--line-height: 1.02;
+  --text-display-lg--letter-spacing: -0.04em;
+  --text-display-lg--font-weight: 600;
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------- */
+/* 2. Semantic tokens (light)                                       */
+/* ---------------------------------------------------------------- */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #f6f8f9;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border: #e3e8ed;
+  --border-strong: #cdd5dd;
+  --fg: #12171c;
+  --fg-muted: #516172;
+  --fg-subtle: #8595a5;
+  --accent: #00a693;
+  --accent-hover: #058376;
+  --accent-fg: #ffffff;
+  --ring: #06cbb2;
+
+  /* Code surfaces stay dark in both themes — code reads better that way. */
+  --code-bg: #0b0e12;
+  --code-fg: #d5dbe1;
+  --code-border: #232a32;
+}
+
+/* ---------------------------------------------------------------- */
+/* 3. Semantic tokens (dark)                                        */
+/* ---------------------------------------------------------------- */
+.dark {
+  --bg: #0b0e12;
+  --bg-subtle: #12171c;
+  --surface: #12171c;
+  --surface-raised: #191f26;
+  --border: #262e37;
+  --border-strong: #3a444f;
+  --fg: #f6f8f9;
+  --fg-muted: #a4b1bf;
+  --fg-subtle: #8595a5;
+  --accent: #22e8ca;
+  --accent-hover: #63f8dd;
+  --accent-fg: #00201d;
+  --ring: #22e8ca;
+
+  --code-bg: #090c0f;
+  --code-fg: #d5dbe1;
+  --code-border: #232a32;
+}
+
+/* ---------------------------------------------------------------- */
+/* 4. Expose semantic tokens as Tailwind utilities                  */
+/*    → bg-bg, text-fg, border-border, bg-accent, …                 */
+/* ---------------------------------------------------------------- */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-ring: var(--ring);
+  --color-code-bg: var(--code-bg);
+  --color-code-fg: var(--code-fg);
+  --color-code-border: var(--code-border);
+}
+
+/* ---------------------------------------------------------------- */
+/* 5. Base layer                                                    */
+/* ---------------------------------------------------------------- */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Next 16 no longer force-disables smooth scroll on route change
+       unless this attribute is present — see layout.tsx. */
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Visible, consistent focus ring for keyboard users. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-300);
+    color: var(--color-brand-950);
+  }
+}
+
+@layer utilities {
+  /* Subtle grid backdrop used behind the hero. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Respect users who ask for less motion. Framer Motion reads this too,
+   but belt-and-braces for CSS transitions/animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
